@@ -46,6 +46,7 @@ func StartST() error {
 		// global.SshClient = true
 		ST = st
 		Lk.Unlock()
+		Logger.Info("启动连接中转机成功")
 	}
 	return nil
 }

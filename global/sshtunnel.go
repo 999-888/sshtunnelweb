@@ -113,7 +113,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			// 根据IP 查找用户关联的ssh转发信息，无论是没找到用户，还是没找到转发信息，
 			// 都直接忽略本次数据请求，进入下一次本地端口监听等待中
 			tmpuser := myorm.User{}
-			if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).Preload("Conn").Find(&tmpuser).Error; err != nil {
+			if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).Preload("Conn").First(&tmpuser).Error; err != nil {
 				Logger.Error(requestIP + "查找db失败: " + err.Error())
 				continue
 			}

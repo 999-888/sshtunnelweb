@@ -57,12 +57,14 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 	}
 	remote.Close()
 	if tmpconn.Local == "" { // 第一次申请，打开端口
+		global.Logger.Info(tmpconn.Svcname + ": 第一次开启端口")
 		local := util.GetOnePort()
 		local_listen, err := global.StartLocalListen(":" + local)
 		if err != nil {
 			global.Logger.Error("本地监听失败")
 			return fmt.Errorf("本地监听失败")
 		}
+		global.Logger.Info("本地监听 " + local + " 成功")
 		global.GlobalSshtunnelInfo[local] = &local_listen
 		if global.DB.Model(&myorm.Conn{}).Where("id = ?", tmpconn.ID).Updates(myorm.Conn{Local: local}).Error != nil {
 			local_listen.Close()
@@ -79,9 +81,10 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			}
 			if global.DB.Model(&tmpuser).Association("Conn").Append(&tmpconn) != nil {
 				local_listen.Close()
-				global.Logger.Error("添加db关联关系失败")
-				return fmt.Errorf("添加db关联关系失败")
+				global.Logger.Error(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
+				return fmt.Errorf(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 			}
+			global.Logger.Info(tmpuser.Username + " 关联 " + tmpconn.Local + " 成功")
 		}
 		go global.StartTunnel(local_listen, tmpconn.Remote, global.ST)
 	} else { // 已经存在该服务的转发了，直接建立申请人和 已存在conn的连接关系
@@ -94,9 +97,10 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 				return fmt.Errorf(err.Error())
 			}
 			if global.DB.Model(&tmpuser).Association("Conn").Append(&tmpconn) != nil {
-				global.Logger.Error("添加db关联关系失败")
-				return fmt.Errorf("添加db关联关系失败")
+				global.Logger.Error(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
+				return fmt.Errorf(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 			}
+			global.Logger.Info(tmpuser.Username + " 关联 " + tmpconn.Local + " 成功")
 		}
 	}
 	return nil

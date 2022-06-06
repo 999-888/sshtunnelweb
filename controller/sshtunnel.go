@@ -54,6 +54,7 @@ func AddSshtunnel(ctx *gin.Context) {
 	resp := util.NewResult(ctx)
 	userID, ok := ctx.Get("userid")
 	if !ok {
+		global.Logger.Error("addsshtunnel: 没有获取到jwt信息")
 		resp.Error(500, "没有获取到jwt信息")
 	}
 	userinfo := myorm.User{}
@@ -66,6 +67,7 @@ func AddSshtunnel(ctx *gin.Context) {
 
 	if err := ctx.ShouldBind(&postInfo); err != nil {
 		// fmt.Println(postInfo)
+		global.Logger.Error("addsshtunnel: 获取参数失败")
 		resp.Error(500, "获取参数失败")
 		return
 	}
@@ -73,17 +75,20 @@ func AddSshtunnel(ctx *gin.Context) {
 	tmpres := myorm.Conn{}
 	// connID, _ := strconv.Atoi(postInfo.ID)
 	if global.DB.Model(&myorm.Conn{}).First(&tmpres, postInfo.ID).Error != nil {
+		global.Logger.Error("指定的远程服务不存在")
 		resp.Error(500, "指定的远程服务不存在")
 		return
 	}
 
 	if !userinfo.IsAdmin {
 		if err := addWorkflow(userinfo.Username, tmpres.Local, tmpres.Svcname); err != nil {
+			global.Logger.Error("增加审批工作流失败： " + err.Error())
 			resp.Error(500, err.Error())
 			return
 		}
 	} else {
 		if err := starttunnel(0, true, tmpres); err != nil {
+			global.Logger.Error(tmpres.Svcname + ": 开启隧道失败: " + err.Error())
 			resp.Error(500, err.Error())
 			return
 		}
