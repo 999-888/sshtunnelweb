@@ -15,8 +15,7 @@ import (
 // }
 
 var (
-	// {"80": {"info": sshinfo },}
-	// {"80": 本地80端口的地址, "800": 本地800端口的地址,}
+	// {"80": *net.Listener,}
 	// GlobalSshtunnelInfo map[string]map[string]Sshinfo = make(map[string]map[string]Sshinfo, 0)
 	GlobalSshtunnelInfo map[string]*net.Listener = make(map[string]*net.Listener, 0)
 	// SshClient           bool                     = false // 判定是否对中转机做了拨号

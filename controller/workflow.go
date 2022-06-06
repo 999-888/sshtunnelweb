@@ -67,6 +67,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 		}
 		global.Logger.Info("本地监听 " + local + " 成功")
 		global.GlobalSshtunnelInfo[local] = &local_listen
+		global.Logger.Info(global.GlobalSshtunnelInfo)
 		if global.DB.Model(&myorm.Conn{}).Where("id = ?", tmpconn.ID).Updates(myorm.Conn{Local: local}).Error != nil {
 			local_listen.Close()
 			global.Logger.Error("db 更新信息识别")
