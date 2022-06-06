@@ -142,20 +142,20 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 
 			// fmt.Println("连接远程目标主机端口成功")
 			// 每次交互完信息，把local remote自动close
-			go transfer(local, remote)
+			go transfer(&local, &remote)
 		} else {
 			continue
 		}
 	}
 }
 
-func transfer(local net.Conn, remote net.Conn) {
+func transfer(local *net.Conn, remote *net.Conn) {
 	// 每次交互完信息，把local remote自动close
-	defer local.Close()
-	defer remote.Close()
+	defer (*local).Close()
+	defer (*remote).Close()
 	go func() {
-		io.Copy(remote, local)
+		io.Copy((*remote), (*local))
 	}()
 
-	io.Copy(local, remote)
+	io.Copy((*local), (*remote))
 }

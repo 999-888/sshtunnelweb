@@ -5,7 +5,6 @@ import (
 	"os"
 	"path/filepath"
 	"sshtunnelweb/myorm"
-	"sshtunnelweb/util"
 
 	"gorm.io/driver/sqlite"
 	"gorm.io/gorm"
