@@ -57,13 +57,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 		return fmt.Errorf(tmpconn.Remote + "：远端主机不可用")
 	}
 	remote.Close()
-<<<<<<< HEAD
-	if tmpconn.Local == "" { // 第一个申请该服务的人
-		fmt.Println("第一个人申请")
-=======
-
-	if tmpconn.Local == "" { // 第一个申请该服务的人
->>>>>>> 2073d01f1caa0ef876e57108faf0eae3f38bbb2a
+	if tmpconn.Local == "" {
 		local := util.GetOnePort()
 		local_listen, err := global.StartLocalListen(":" + local)
 		if err != nil {
@@ -76,21 +70,15 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			global.Logger.Error("db 更新信息识别")
 			return fmt.Errorf("db 更新信息识别")
 		}
-		fmt.Println("tmpworlflow: ", tmpworkflow)
-		fmt.Println("tmpconn: ", tmpconn)
 		// 关联 user 和  conn
 		if !isadmin {
-<<<<<<< HEAD
 			tmpuser := myorm.User{}
 			if err := global.DB.Model(&myorm.User{}).Where(myorm.User{Username: tmpworkflow.Username}).First(&tmpuser).Error; err != nil {
 				global.Logger.Error(err.Error())
 				return fmt.Errorf(err.Error())
 			}
 			if global.DB.Model(&tmpuser).Association("Conn").Append(&tmpconn) != nil {
-=======
-			if global.DB.Model(&myorm.User{}).Where(&myorm.User{Username: tmpworkflow.Username}).Association("Conn").Append(&tmpconn) != nil {
 				local_listen.Close()
->>>>>>> 2073d01f1caa0ef876e57108faf0eae3f38bbb2a
 				global.Logger.Error("添加db关联关系失败")
 				return fmt.Errorf("添加db关联关系失败")
 			}
@@ -100,10 +88,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 	} else { // 已经存在改服务的转发了，直接建立申请人和 已存在conn的连接关系
 		// 关联 user 和  conn
 		// admin 不用关联
-		fmt.Println("tmpworlflow: ", tmpworkflow)
-		fmt.Println("tmpconn: ", tmpconn)
 		if !isadmin {
-<<<<<<< HEAD
 			tmpuser := myorm.User{}
 			if err := global.DB.Model(&myorm.User{}).Where(myorm.User{Username: tmpworkflow.Username}).First(&tmpuser).Error; err != nil {
 				global.Logger.Error(err.Error())
@@ -111,12 +96,8 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			}
 			if global.DB.Model(&tmpuser).Association("Conn").Append(&tmpconn) != nil {
 				global.Logger.Error("添加db关联关系失败")
-=======
-			if global.DB.Model(&myorm.User{}).Where(&myorm.User{Username: tmpworkflow.Username}).Association("Conn").Append(&tmpconn) != nil {
->>>>>>> 2073d01f1caa0ef876e57108faf0eae3f38bbb2a
 				return fmt.Errorf("添加db关联关系失败")
 			}
-			fmt.Println(tmpuser)
 		}
 	}
 	return nil
