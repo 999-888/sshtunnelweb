@@ -72,7 +72,6 @@ func AddSshtunnel(ctx *gin.Context) {
 		resp.Error(500, "获取参数失败")
 		return
 	}
-	global.Logger.Info(fmt.Sprintf("申请的conn id: %d", postInfo.ID))
 	tmpres := myorm.Conn{}
 	// connID, _ := strconv.Atoi(postInfo.ID)
 	if global.DB.Model(&myorm.Conn{}).First(&tmpres, postInfo.ID).Error != nil {
@@ -142,23 +141,26 @@ func DelSshtunnel(ctx *gin.Context) {
 			resp.Error(500, "取消关联更新db失败")
 			return
 		}
+		global.Logger.Info(tmpuser.Username + "不关联" + selectConn.Svcname + "成功")
 		// 判断 该conn是否还存在其他用户在使用，无则本地端口close，并重置local为“0”
-		tmpconn := myorm.Conn{}
-		if err := global.DB.Model(&myorm.Conn{}).Where(&selectConn).First(&tmpconn).Error; err != nil {
-			global.Logger.Error(err.Error())
-			resp.Error(500, err.Error())
-			return
-		}
-		if global.DB.Model(&tmpconn).Association("User").Count() == 0 {
+		// tmpconn := myorm.Conn{}
+		// if err := global.DB.Model(&myorm.Conn{}).Where(&selectConn).First(&tmpconn).Error; err != nil {
+		// 	global.Logger.Error(err.Error())
+		// 	resp.Error(500, err.Error())
+		// 	return
+		// }
+		if global.DB.Model(&selectConn).Association("User").Count() == 0 {
+			global.Logger.Info(selectConn.Local + " 端口已无人员使用，开始关闭")
 			// (*(selectConn.St[0])).Close()
 			(*global.GlobalSshtunnelInfo[selectConn.Local]).Close()
+			global.Logger.Info(selectConn.Local + " 端口关闭成功")
 			if err := global.DB.Model(&myorm.Conn{}).Where("id = ?", delInfo.ID).Update("local", "").Error; err != nil {
 				global.Logger.Error("重置local失败: " + err.Error())
 				resp.Error(500, "重置local失败")
 				return
 			}
+			global.Logger.Info("重置db中的local为空成功")
 		}
-		global.Logger.Info(tmpuser.Username + "不关联" + tmpconn.Svcname + "成功")
 		resp.Success(nil)
 		return
 	}

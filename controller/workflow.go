@@ -85,7 +85,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 				global.Logger.Error(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 				return fmt.Errorf(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 			}
-			global.Logger.Info(tmpuser.Username + " 关联 " + tmpconn.Local + " 成功")
+			global.Logger.Info(tmpuser.Username + " 关联 " + local + " 成功")
 		}
 		go global.StartTunnel(local_listen, tmpconn.Remote, global.ST)
 	} else { // 已经存在该服务的转发了，直接建立申请人和 已存在conn的连接关系
@@ -164,7 +164,6 @@ func ChangeOnWorkflow(c *gin.Context) {
 		resp.Error(500, "获取参数失败")
 		return
 	}
-	global.Logger.Info(fmt.Sprintf("%d准备开启sshtunnel", postInfo.ID))
 	if err := starttunnel(postInfo.ID, false, myorm.Conn{}); err != nil {
 		resp.Error(500, err.Error())
 		return
