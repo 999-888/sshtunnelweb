@@ -86,3 +86,54 @@ func ListOneUserLocalPort(c *gin.Context) {
 	resp.Success(&tmpuser)
 	return
 }
+
+func DelOneUserLocalPort(c *gin.Context) {
+	resp := util.NewResult(c)
+	userID, ok := c.Get("userid")
+	if !ok {
+		global.Logger.Error("没有获取到jwt信息")
+		resp.Error(500, "没有获取到jwt信息")
+		return
+	}
+	userinfo := myorm.User{}
+	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
+		global.Logger.Error("该用户未在db中查到")
+		resp.Error(500, "该用户未在db中查到")
+		return
+	}
+	if !userinfo.IsAdmin {
+		global.Logger.Error("不是admin用户")
+		resp.Error(500, "不是admin用户")
+		return
+	}
+
+	type postdata struct {
+		ID     uint `form:"id" json:"id" binding:"required"`
+		ConnID uint `form:"conn" json:"conn" binding:"required"`
+	}
+	var postInfo postdata
+	if err := c.ShouldBind(&postInfo); err != nil {
+		resp.Error(500, "未获取到全部参数")
+		return
+	}
+	tmpUser := myorm.User{}
+
+	if err := global.DB.Model(&myorm.User{}).First(&tmpUser, postInfo.ID).Error; err != nil {
+		global.Logger.Error("查找错误: " + err.Error())
+		resp.Error(500, err.Error())
+		return
+	}
+	tmpConn := myorm.Conn{}
+	if err := global.DB.Model(&myorm.Conn{}).First(&tmpConn, postInfo.ConnID).Error; err != nil {
+		global.Logger.Error("查找错误: " + err.Error())
+		resp.Error(500, err.Error())
+		return
+	}
+	if err := global.DB.Model(&tmpUser).Association("Conn").Delete(&tmpConn); err != nil {
+		global.Logger.Error(tmpUser.Username + "去关联 " + tmpConn.Svcname + "失败；" + err.Error())
+		resp.Error(500, "取消关联失败")
+		return
+	}
+	resp.Success(nil)
+	return
+}

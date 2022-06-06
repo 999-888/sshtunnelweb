@@ -53,6 +53,7 @@ func Router() *gin.Engine {
 			{
 				local.GET("/list", ctl.ListLocalPort)
 				local.POST("/list/user", ctl.ListOneUserLocalPort)
+				local.POST("/del/user", ctl.DelOneUserLocalPort)
 			}
 			workflow := sshtunnel.Group("/workflow")
 			{
