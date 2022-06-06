@@ -92,7 +92,17 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 
 		if err != nil {
 			Logger.Error("本地accept失败 :" + err.Error())
-			continue
+			f := false
+			for _, v := range GlobalSshtunnelInfo {
+				if v == &local_listen {
+					f = true
+				}
+			}
+			if f {
+				continue
+			} else {
+				break
+			}
 		}
 		f := false // 判定是否有权限可以继续访问
 		// fmt.Println("accept net.conn addr: ", local.LocalAddr().String(), strings.Split(local.RemoteAddr().String(), ":")[0])
