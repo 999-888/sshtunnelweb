@@ -1,0 +1,1 @@
+import{q as e}from"./index.4af6ff06.js";function r(){return e({url:"/sshtunnel/remote/list",method:"get"})}function n(){return e({url:"/sshtunnel/remote/list/select",method:"get"})}function s(t){return e({url:"/sshtunnel/remote/add",method:"post",data:t})}function u(t){return e({url:"/sshtunnel/remote/update",method:"post",data:t})}export{s as a,r as b,n as g,u};

@@ -1,0 +1,25 @@
+sqlite:
+  path: ./dbfile
+  filename: app.db
+
+logs:
+  path: ./logs
+  logfilename: app
+  logfileext: log
+
+accesslogs:
+  path: ./logs
+  logfilename: http
+  logfileext: log
+
+run:
+  port: 9999  
+
+admin:
+  name: root
+  passwd: sshtunnel
+
+jwt:
+  expires_time: 3600
+  buffer_time: 300
+  issuer: sshtunnel
