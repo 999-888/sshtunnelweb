@@ -97,6 +97,7 @@ func DelSshtunnel(ctx *gin.Context) {
 	userID, ok := ctx.Get("userid")
 	if !ok {
 		resp.Error(500, "没有获取到jwt信息")
+		return
 	}
 	var delInfo sshTunnel
 	if err := ctx.ShouldBind(&delInfo); err != nil {
@@ -106,14 +107,15 @@ func DelSshtunnel(ctx *gin.Context) {
 		return
 	}
 	// fmt.Println("del args: ", delInfo.Remote)
-	tmpres := []myorm.Conn{}
-	if global.DB.Model(&myorm.User{}).Where("id = ?", userID).Association("Conn").Find(&tmpres) != nil {
-		resp.Error(500, "查询db出错")
+	tmpuser := myorm.User{}
+	if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID).Preload("Conn").First(&tmpuser).Error; err != nil {
+		global.Logger.Error("db查找用户出错" + err.Error())
+		resp.Error(500, "db查找用户出错")
 		return
 	}
 	f := false
 	selectConn := myorm.Conn{}
-	for _, k := range tmpres {
+	for _, k := range tmpuser.Conn {
 		if delInfo.ID == k.ID {
 			selectConn = k
 			f = true
@@ -123,15 +125,29 @@ func DelSshtunnel(ctx *gin.Context) {
 		resp.Error(404, "指定的隧道未和你关联授权")
 		return
 	} else {
-		if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID.(int)).Association("Conn").Delete(&selectConn); err != nil {
+		deluser := myorm.User{}
+		if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID).First(&deluser).Error; err != nil {
+			global.Logger.Error("db查找用户出错: " + err.Error())
+			resp.Error(500, "db查找用户出错")
+			return
+		}
+		if err := global.DB.Model(&deluser).Association("Conn").Delete(&selectConn); err != nil {
+			global.Logger.Error("取消关联更新db失败: " + err.Error())
 			resp.Error(500, "取消关联更新db失败")
 			return
 		}
-		// 判断 改conn是否还存在其他用户在使用，无则本地端口close，并重置local为“0”
-		if global.DB.Model(&myorm.Conn{}).Where(&selectConn).Association("User").Count() == 0 {
+		// 判断 该conn是否还存在其他用户在使用，无则本地端口close，并重置local为“0”
+		tmpconn := myorm.Conn{}
+		if err := global.DB.Model(&myorm.Conn{}).Where(&selectConn).First(&tmpconn).Error; err != nil {
+			global.Logger.Error(err.Error())
+			resp.Error(500, err.Error())
+			return
+		}
+		if global.DB.Model(&tmpconn).Association("User").Count() == 0 {
 			// (*(selectConn.St[0])).Close()
 			(*global.GlobalSshtunnelInfo[selectConn.Local]).Close()
-			if global.DB.Model(&myorm.Conn{}).Where("id = ?", delInfo.ID).Updates(&myorm.Conn{Local: "0"}) != nil {
+			if err := global.DB.Model(&myorm.Conn{}).Where("id = ?", delInfo.ID).Update("local", "").Error; err != nil {
+				global.Logger.Error("重置local失败: " + err.Error())
 				resp.Error(500, "重置local失败")
 				return
 			}

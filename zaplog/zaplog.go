@@ -59,7 +59,7 @@ func GetInitAccessLogger(filepath, filename, fileext string) (*zap.SugaredLogger
 		EncoderConfig: zapcore.EncoderConfig{
 			MessageKey: "msg",
 		},
-		OutputPaths:      []string{"stdout", "./log.txt"},
+		OutputPaths:      []string{"stdout"},
 		ErrorOutputPaths: []string{"stderr"},
 	}
 

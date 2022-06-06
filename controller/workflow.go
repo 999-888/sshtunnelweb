@@ -53,11 +53,10 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 	if err != nil {
 		global.Logger.Error(fmt.Sprintf("远程目标%s不可用 ", tmpconn.Remote))
 		global.Logger.Error(err.Error())
-		global.Logger.Error(tmpconn.Remote + "：远端主机不可用")
 		return fmt.Errorf(tmpconn.Remote + "：远端主机不可用")
 	}
 	remote.Close()
-	if tmpconn.Local == "" {
+	if tmpconn.Local == "" { // 第一次申请，打开端口
 		local := util.GetOnePort()
 		local_listen, err := global.StartLocalListen(":" + local)
 		if err != nil {
@@ -74,6 +73,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 		if !isadmin {
 			tmpuser := myorm.User{}
 			if err := global.DB.Model(&myorm.User{}).Where(myorm.User{Username: tmpworkflow.Username}).First(&tmpuser).Error; err != nil {
+				local_listen.Close()
 				global.Logger.Error(err.Error())
 				return fmt.Errorf(err.Error())
 			}
@@ -82,10 +82,9 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 				global.Logger.Error("添加db关联关系失败")
 				return fmt.Errorf("添加db关联关系失败")
 			}
-			fmt.Println(tmpuser)
 		}
 		go global.StartTunnel(local_listen, tmpconn.Remote, global.ST)
-	} else { // 已经存在改服务的转发了，直接建立申请人和 已存在conn的连接关系
+	} else { // 已经存在该服务的转发了，直接建立申请人和 已存在conn的连接关系
 		// 关联 user 和  conn
 		// admin 不用关联
 		if !isadmin {
