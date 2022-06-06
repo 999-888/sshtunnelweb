@@ -73,7 +73,6 @@ func InitSqlite() {
 					os.Exit(-1)
 				}
 			}
-			local := util.GetOnePort()
 			local_listen, err := StartLocalListen(":" + k.Local)
 			if err != nil {
 				Logger.Error("启动ing：" + k.Local + ": 本地监听失败")
@@ -82,7 +81,7 @@ func InitSqlite() {
 			}
 			// p := []*net.Listener{}
 			// p = append(p, &local_listen)
-			GlobalSshtunnelInfo[local] = &local_listen
+			GlobalSshtunnelInfo[k.Local] = &local_listen
 			go StartTunnel(local_listen, k.Remote, ST)
 		}
 	}
