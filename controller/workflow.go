@@ -35,7 +35,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			return err
 		}
 		tmp := myorm.Conn{}
-		if err := global.DB.Model(&myorm.Conn{}).Where(&myorm.Conn{Local: tmpworkflow.Localport}).First(&tmp).Error; err != nil {
+		if err := global.DB.Model(&myorm.Conn{}).Where(&myorm.Conn{Svcname: tmpworkflow.Svcname}).First(&tmp).Error; err != nil {
 			global.Logger.Error(err.Error())
 			return err
 		}
@@ -55,6 +55,7 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 		global.Logger.Error(err.Error())
 		return fmt.Errorf(tmpconn.Remote + "：远端主机不可用")
 	}
+	global.Logger.Info(tmpconn.Remote + " 可用")
 	remote.Close()
 	if tmpconn.Local == "" { // 第一次申请，打开端口
 		global.Logger.Info(tmpconn.Svcname + ": 第一次开启端口")
@@ -163,6 +164,7 @@ func ChangeOnWorkflow(c *gin.Context) {
 		resp.Error(500, "获取参数失败")
 		return
 	}
+	global.Logger.Info(fmt.Sprintf("%d准备开启sshtunnel", postInfo.ID))
 	if err := starttunnel(postInfo.ID, false, myorm.Conn{}); err != nil {
 		resp.Error(500, err.Error())
 		return
