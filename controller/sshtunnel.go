@@ -1,6 +1,7 @@
 package controller
 
 import (
+	"fmt"
 	"sshtunnelweb/global"
 	"sshtunnelweb/myorm"
 	"sshtunnelweb/myorm/resps"
@@ -71,7 +72,7 @@ func AddSshtunnel(ctx *gin.Context) {
 		resp.Error(500, "获取参数失败")
 		return
 	}
-
+	global.Logger.Info(fmt.Sprintf("申请的conn id: %d", postInfo.ID))
 	tmpres := myorm.Conn{}
 	// connID, _ := strconv.Atoi(postInfo.ID)
 	if global.DB.Model(&myorm.Conn{}).First(&tmpres, postInfo.ID).Error != nil {
@@ -79,7 +80,7 @@ func AddSshtunnel(ctx *gin.Context) {
 		resp.Error(500, "指定的远程服务不存在")
 		return
 	}
-
+	global.Logger.Info(userinfo.Username + "申请关联" + tmpres.Svcname)
 	if !userinfo.IsAdmin {
 		if err := addWorkflow(userinfo.Username, tmpres.Local, tmpres.Svcname); err != nil {
 			global.Logger.Error("增加审批工作流失败： " + err.Error())
@@ -157,6 +158,7 @@ func DelSshtunnel(ctx *gin.Context) {
 				return
 			}
 		}
+		global.Logger.Info(tmpuser.Username + "不关联" + tmpconn.Svcname + "成功")
 		resp.Success(nil)
 		return
 	}
