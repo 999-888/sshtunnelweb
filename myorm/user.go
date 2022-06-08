@@ -6,12 +6,11 @@ import (
 
 type User struct {
 	gorm.Model
-	Username string `gorm:"unique, not null"`
-	Passwd   string `gorm:"not null"`
-	Ip       string `gorm:"unique, not null"`
-	Conn     []Conn `gorm:"many2many:user_conn;"`
-	// Conns    []*Conn `gorm:"-"`
-	IsAdmin bool `gorm:"default:false"`
+	Username string  `gorm:"unique, not null"`
+	Passwd   string  `gorm:"not null"`
+	Ip       string  `gorm:"unique, not null"`
+	Conn     []*Conn `gorm:"many2many:user_conn;association_jointable_foreignkey:conn_id"`
+	IsAdmin  bool    `gorm:"default:false"`
 }
 
 func (User) TableName() string {
@@ -21,13 +20,10 @@ func (User) TableName() string {
 // user 和  conn 多对多
 type Conn struct {
 	gorm.Model
-	// port
-	Local string `gorm:"unique,default:null"`
-	// ip:port
-	Remote  string `gorm:"unique,not null"`
-	Svcname string `gorm:"unique,not null"`
-	// Users   []*User `gorm:"-"`
-	User []User `gorm:"many2many:user_conn;"`
+	Local   string  `gorm:"unique,default:null"`
+	Remote  string  `gorm:"unique,not null"`
+	Svcname string  `gorm:"unique,not null"`
+	User    []*User `gorm:"many2many:user_conn;association_jointable_foreignkey:user_id"`
 }
 
 func (Conn) TableName() string {

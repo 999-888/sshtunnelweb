@@ -38,3 +38,50 @@
 2022-06-08T18:42:45.892+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
 2022-06-08T18:46:28.922+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
 2022-06-08T18:58:16.128+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:22:04.473+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:33:16.154+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:44:08.735+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:45:39.694+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:47:26.091+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T20:58:34.360+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:00:48.820+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:03:23.560+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:05:26.073+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:07:17.514+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:30:29.738+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:30:56.084+0800	INFO	controller/sshtunnel.go:170	 端口被admin权限账户请求删除
+2022-06-08T21:41:13.087+0800	INFO	controller/sshtunnel.go:170	 端口被admin权限账户请求删除
+2022-06-08T21:41:27.272+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:41:42.592+0800	INFO	controller/sshtunnel.go:170	55077 端口被admin权限账户请求删除
+2022-06-08T21:41:42.592+0800	INFO	controller/sshtunnel.go:173	55077 端口关闭成功
+2022-06-08T21:41:42.677+0800	INFO	controller/sshtunnel.go:179	重置db中的local为空成功
+2022-06-08T21:45:44.332+0800	INFO	controller/sshtunnel.go:82	zhuce1申请关联node2-grafana
+2022-06-08T21:46:08.726+0800	INFO	controller/workflow.go:58	node2:3000 可用
+2022-06-08T21:46:08.726+0800	INFO	controller/workflow.go:61	node2-grafana: 第一次开启端口
+2022-06-08T21:46:11.075+0800	INFO	controller/workflow.go:68	本地监听 39650 成功
+2022-06-08T21:46:11.076+0800	INFO	controller/workflow.go:70	map[32883:0xc000148160 39650:0xc000148ba0 55077:0xc000148140]
+2022-06-08T21:46:11.252+0800	INFO	controller/workflow.go:89	zhuce1 关联 39650 成功
+2022-06-08T21:47:38.595+0800	INFO	controller/sshtunnel.go:144	zhuce1不关联node2-grafana成功
+2022-06-08T21:47:38.596+0800	INFO	controller/sshtunnel.go:146	39650 端口已无人员使用，开始关闭
+2022-06-08T21:47:38.596+0800	INFO	controller/sshtunnel.go:149	39650 端口关闭成功
+2022-06-08T21:47:38.666+0800	INFO	controller/sshtunnel.go:155	重置db中的local为空成功
+2022-06-08T21:50:58.924+0800	INFO	global/sshtunnel1.go:48	启动连接中转机成功
+2022-06-08T21:51:29.644+0800	INFO	controller/sshtunnel.go:82	zhuce1申请关联node3-nginx
+2022-06-08T21:51:37.749+0800	INFO	controller/workflow.go:58	node3:80 可用
+2022-06-08T21:51:37.840+0800	INFO	controller/workflow.go:105	zhuce1 关联 32883 成功
+2022-06-08T21:51:53.653+0800	INFO	controller/sshtunnel.go:144	zhuce1不关联node3-nginx成功
+2022-06-08T21:51:53.653+0800	INFO	controller/sshtunnel.go:146	32883 端口已无人员使用，开始关闭
+2022-06-08T21:51:53.654+0800	INFO	controller/sshtunnel.go:149	32883 端口关闭成功
+2022-06-08T21:51:53.723+0800	INFO	controller/sshtunnel.go:155	重置db中的local为空成功
+2022-06-08T21:54:14.952+0800	INFO	controller/sshtunnel.go:82	zhuce1申请关联node2-grafana
+2022-06-08T21:54:20.846+0800	INFO	controller/sshtunnel.go:82	zhuce1申请关联node3-nginx
+2022-06-08T21:54:29.918+0800	INFO	controller/workflow.go:58	node2:3000 可用
+2022-06-08T21:54:29.918+0800	INFO	controller/workflow.go:61	node2-grafana: 第一次开启端口
+2022-06-08T21:54:32.243+0800	INFO	controller/workflow.go:68	本地监听 58478 成功
+2022-06-08T21:54:32.243+0800	INFO	controller/workflow.go:70	map[32883:0xc0008ba100 58478:0xc0008bb120]
+2022-06-08T21:54:32.407+0800	INFO	controller/workflow.go:89	zhuce1 关联 58478 成功
+2022-06-08T21:54:35.563+0800	INFO	controller/workflow.go:58	node3:80 可用
+2022-06-08T21:54:35.563+0800	INFO	controller/workflow.go:61	node3-nginx: 第一次开启端口
+2022-06-08T21:54:37.906+0800	INFO	controller/workflow.go:68	本地监听 32733 成功
+2022-06-08T21:54:37.906+0800	INFO	controller/workflow.go:70	map[32733:0xc0008bbf60 32883:0xc0008ba100 58478:0xc0008bb120]
+2022-06-08T21:54:38.056+0800	INFO	controller/workflow.go:89	zhuce1 关联 32733 成功
