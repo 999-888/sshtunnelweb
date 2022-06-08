@@ -1,0 +1,15 @@
+[Unit]
+Description=Open ssh tunnel
+After=network.target auditd.service
+
+[Service]
+ExecStart=/sshtunnelweb/sshtunnelweb -c /sshtunnelweb/config.yaml
+ExecReload=/bin/kill -HUP $MAINPID
+KillMode=process
+Restart=on-failure
+RestartPreventExitStatus=255
+Type=simple
+
+[Install]
+WantedBy=multi-user.target
+Alias=sshtunnelwebd.service

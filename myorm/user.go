@@ -27,7 +27,7 @@ type Conn struct {
 	Remote  string `gorm:"unique,not null"`
 	Svcname string `gorm:"unique,not null"`
 	// Users   []*User `gorm:"-"`
-	User []*User `gorm:"many2many:user_conn;"`
+	User []User `gorm:"many2many:user_conn;"`
 }
 
 func (Conn) TableName() string {

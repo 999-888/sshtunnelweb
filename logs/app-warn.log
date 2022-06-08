@@ -1,0 +1,7 @@
+2022-06-08T14:51:13.600+0800	ERROR	global/sshtunnel.go:117	[查找关联用户失败: record not found
+2022-06-08T14:51:13.603+0800	ERROR	global/sshtunnel.go:117	[查找关联用户失败: record not found
+2022-06-08T14:51:17.710+0800	ERROR	global/sshtunnel.go:117	[查找关联用户失败: record not found
+2022-06-08T18:46:28.588+0800	ERROR	global/sshtunnel.go:45	ssh 第1次拨号 中转机失败
+ssh: handshake failed: EOF
+2022-06-08T18:46:55.535+0800	ERROR	controller/sshtunnel.go:160	admin权限账户删除端口，清理conn和user的关联关系失败：primary key required
+2022-06-08T18:58:26.568+0800	ERROR	controller/sshtunnel.go:160	admin权限账户删除端口，清理conn和user的关联关系失败：primary key required

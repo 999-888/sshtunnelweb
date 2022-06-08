@@ -125,31 +125,43 @@ func DelSshtunnel(ctx *gin.Context) {
 			f = true
 		}
 	}
-	if !f {
+	if !tmpuser.IsAdmin && !f {
 		resp.Error(404, "指定的隧道未和你关联授权")
 		return
 	} else {
-		deluser := myorm.User{}
-		if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID).First(&deluser).Error; err != nil {
-			global.Logger.Error("db查找用户出错: " + err.Error())
-			resp.Error(500, "db查找用户出错")
-			return
-		}
-		if err := global.DB.Model(&deluser).Association("Conn").Delete(&selectConn); err != nil {
-			global.Logger.Error("取消关联更新db失败: " + err.Error())
-			resp.Error(500, "取消关联更新db失败")
-			return
-		}
-		global.Logger.Info(tmpuser.Username + "不关联" + selectConn.Svcname + "成功")
-		// 判断 该conn是否还存在其他用户在使用，无则本地端口close，并重置local为“0”
-		// tmpconn := myorm.Conn{}
-		// if err := global.DB.Model(&myorm.Conn{}).Where(&selectConn).First(&tmpconn).Error; err != nil {
-		// 	global.Logger.Error(err.Error())
-		// 	resp.Error(500, err.Error())
+		// deluser := myorm.User{}
+		// if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID).First(&deluser).Error; err != nil {
+		// 	global.Logger.Error("db查找用户出错: " + err.Error())
+		// 	resp.Error(500, "db查找用户出错")
 		// 	return
 		// }
-		if global.DB.Model(&selectConn).Association("User").Count() == 0 {
-			global.Logger.Info(selectConn.Local + " 端口已无人员使用，开始关闭")
+		if !tmpuser.IsAdmin {
+			if err := global.DB.Model(&tmpuser).Association("Conn").Delete(&selectConn); err != nil {
+				global.Logger.Error("取消关联更新db失败: " + err.Error())
+				resp.Error(500, "取消关联更新db失败")
+				return
+			}
+			global.Logger.Info(tmpuser.Username + "不关联" + selectConn.Svcname + "成功")
+			if global.DB.Model(&selectConn).Association("User").Count() == 0 {
+				global.Logger.Info(selectConn.Local + " 端口已无人员使用，开始关闭")
+				// (*(selectConn.St[0])).Close()
+				(*(global.GlobalSshtunnelInfo[selectConn.Local])).Close()
+				global.Logger.Info(selectConn.Local + " 端口关闭成功")
+				if err := global.DB.Model(&myorm.Conn{}).Where("id = ?", delInfo.ID).Update("local", "").Error; err != nil {
+					global.Logger.Error("重置local失败: " + err.Error())
+					resp.Error(500, "重置local失败")
+					return
+				}
+				global.Logger.Info("重置db中的local为空成功")
+			}
+		}
+		if tmpuser.IsAdmin {
+			if err := global.DB.Model(&selectConn).Association("User").Clear(); err != nil {
+				global.Logger.Error("admin权限账户删除端口，清理conn和user的关联关系失败：" + err.Error())
+				resp.Error(500, err.Error())
+				return
+			}
+			global.Logger.Info(selectConn.Local + " 端口被admin权限账户请求删除")
 			// (*(selectConn.St[0])).Close()
 			(*(global.GlobalSshtunnelInfo[selectConn.Local])).Close()
 			global.Logger.Info(selectConn.Local + " 端口关闭成功")
@@ -159,7 +171,17 @@ func DelSshtunnel(ctx *gin.Context) {
 				return
 			}
 			global.Logger.Info("重置db中的local为空成功")
+			resp.Success(nil)
+			return
 		}
+		// 判断 该conn是否还存在其他用户在使用，无则本地端口close，并重置local为“0”
+		// tmpconn := myorm.Conn{}
+		// if err := global.DB.Model(&myorm.Conn{}).Where(&selectConn).First(&tmpconn).Error; err != nil {
+		// 	global.Logger.Error(err.Error())
+		// 	resp.Error(500, err.Error())
+		// 	return
+		// }
+
 		resp.Success(nil)
 		return
 	}
