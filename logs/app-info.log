@@ -85,3 +85,6 @@
 2022-06-08T21:54:37.906+0800	INFO	controller/workflow.go:68	本地监听 32733 成功
 2022-06-08T21:54:37.906+0800	INFO	controller/workflow.go:70	map[32733:0xc0008bbf60 32883:0xc0008ba100 58478:0xc0008bb120]
 2022-06-08T21:54:38.056+0800	INFO	controller/workflow.go:89	zhuce1 关联 32733 成功
+2022-06-09T15:50:02.405+0800	INFO	global/sshtunnel1.go:53	启动连接中转机成功
+2022-06-09T15:53:40.530+0800	INFO	global/sshtunnel1.go:53	启动连接中转机成功
+2022-06-09T15:53:40.533+0800	INFO	global/sqlite.go:93	map[58478:map[192.168.1.5:1]]

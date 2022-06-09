@@ -86,6 +86,12 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 				global.Logger.Error(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 				return fmt.Errorf(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 			}
+			if _, ok := global.LocalPortAndUserIP[tmpconn.Local]; ok {
+				global.LocalPortAndUserIP[tmpconn.Local][tmpuser.Ip] = "1"
+			} else {
+				global.LocalPortAndUserIP[tmpconn.Local] = map[string]string{tmpuser.Ip: "1"}
+			}
+			global.Logger.Info(global.LocalPortAndUserIP)
 			global.Logger.Info(tmpuser.Username + " 关联 " + local + " 成功")
 		}
 		go global.StartTunnel(local_listen, tmpconn.Remote, global.ST)
@@ -102,6 +108,12 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 				global.Logger.Error(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 				return fmt.Errorf(tmpuser.Username + " 关联 " + tmpconn.Local + " 失败")
 			}
+			if _, ok := global.LocalPortAndUserIP[tmpconn.Local]; ok {
+				global.LocalPortAndUserIP[tmpconn.Local][tmpuser.Ip] = "1"
+			} else {
+				global.LocalPortAndUserIP[tmpconn.Local] = map[string]string{tmpuser.Ip: "1"}
+			}
+			global.Logger.Info(global.LocalPortAndUserIP)
 			global.Logger.Info(tmpuser.Username + " 关联 " + tmpconn.Local + " 成功")
 		}
 	}

@@ -118,31 +118,36 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			Logger.Error(requestIP + "查找关联用户失败: " + err.Error())
 			continue
 		}
-		if findUser.IsAdmin { // admin可以使用所有的转发
-			f = true
-		} else {
-			// 根据IP 查找用户关联的ssh转发信息，无论是没找到用户，还是没找到转发信息，
-			// 都直接忽略本次数据请求，进入下一次本地端口监听等待中
-			tmpuser := myorm.User{}
-			if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).Preload("Conn").First(&tmpuser).Error; err != nil {
-				Logger.Error(requestIP + "查找db失败: " + err.Error())
-				continue
-			}
-
-			for _, k := range tmpuser.Conn {
-				if k.Local == localPort {
-					f = true
-				}
+		if _, ok := LocalPortAndUserIP[localPort]; ok {
+			if _, ok := LocalPortAndUserIP[localPort][requestIP]; ok {
+				f = true
 			}
 		}
+		if findUser.IsAdmin { // admin可以使用所有的转发
+			f = true
+		}
+		// } else {
+		// 	// 根据IP 查找用户关联的ssh转发信息，无论是没找到用户，还是没找到转发信息，
+		// 	// 都直接忽略本次数据请求，进入下一次本地端口监听等待中
+		// 	tmpuser := myorm.User{}
+		// 	if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).Preload("Conn").First(&tmpuser).Error; err != nil {
+		// 		Logger.Error(requestIP + "查找db失败: " + err.Error())
+		// 		continue
+		// 	}
+
+		// 	for _, k := range tmpuser.Conn {
+		// 		if k.Local == localPort {
+		// 			f = true
+		// 		}
+		// 	}
+		// }
 		if f {
 
 			// 没法复用dail返回的net.conn
 			remote, err := st.Dial("tcp", Remote)
 			// fmt.Println("remote addr ", &remote)
 			if err != nil {
-				fmt.Printf("连接远程目标%s失败 ", Remote)
-				fmt.Println(err)
+				Logger.Error("连接远程目标%s失败 " + Remote + err.Error())
 				local.Close()
 				remote.Close()
 				break

@@ -19,7 +19,7 @@ func (b *Base) Login(c *gin.Context) {
 	}
 	var postInfo userinfo
 
-	fmt.Println(util.GetRealIp(c))
+	// fmt.Println(util.GetRealIp(c))
 
 	c.ShouldBind(&postInfo)
 	// res := map[string]interface{}{}
@@ -41,11 +41,18 @@ func (b *Base) Login(c *gin.Context) {
 				return
 			}
 		}
-		if global.DB.Model(&myorm.User{}).Where(&myorm.User{Username: postInfo.Name, Passwd: postInfo.Passwd}).Updates(&myorm.User{Ip: getIPFromReq}).Error != nil {
-			resp.Error(500, "更新登录IP错误")
-			return
+		if res.Ip != getIPFromReq {
+			if global.DB.Model(&myorm.User{}).Where(&myorm.User{Username: postInfo.Name, Passwd: postInfo.Passwd}).Updates(&myorm.User{Ip: getIPFromReq}).Error != nil {
+				resp.Error(500, "更新登录IP错误")
+				return
+			}
+			for k, v := range global.LocalPortAndUserIP {
+				if _, ok := v[res.Ip]; ok {
+					delete(global.LocalPortAndUserIP[k], res.Ip)
+					global.LocalPortAndUserIP[k][getIPFromReq] = "1"
+				}
+			}
 		}
-
 		j := myjwt.NewJWT()
 
 		customClaims := j.CreateClaims(myjwt.BaseClaims{

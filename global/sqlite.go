@@ -58,7 +58,7 @@ func InitSqlite() {
 	}
 	// 程序重启，需要重新创建那些已经打开的 本地端口 和 交互数据的监听协程
 	findConn := []myorm.Conn{}
-	if err := db.Model(&myorm.Conn{}).Not("local = ?", "").Find(&findConn).Error; err != nil {
+	if err := db.Model(&myorm.Conn{}).Not("local = ?", "").Preload("User").Find(&findConn).Error; err != nil {
 		// if err.Error()
 		Logger.Error("启动ing：查询db出错" + err.Error())
 		fmt.Println("启动ing：查询db出错" + err.Error())
@@ -82,6 +82,14 @@ func InitSqlite() {
 			// p = append(p, &local_listen)
 			GlobalSshtunnelInfo[k.Local] = &local_listen
 			go StartTunnel(local_listen, k.Remote, ST)
+			for _, u := range k.User {
+				if _, ok := LocalPortAndUserIP[k.Local]; ok {
+					LocalPortAndUserIP[k.Local][u.Ip] = "1"
+				} else {
+					LocalPortAndUserIP[k.Local] = map[string]string{u.Ip: "1"}
+				}
+			}
 		}
+		Logger.Info(LocalPortAndUserIP)
 	}
 }

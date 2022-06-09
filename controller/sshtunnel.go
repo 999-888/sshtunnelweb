@@ -1,7 +1,6 @@
 package controller
 
 import (
-	"fmt"
 	"sshtunnelweb/global"
 	"sshtunnelweb/myorm"
 	"sshtunnelweb/myorm/resps"
@@ -140,7 +139,12 @@ func DelSshtunnel(ctx *gin.Context) {
 			resp.Error(500, "取消关联更新db失败")
 			return
 		}
+		delete(global.LocalPortAndUserIP[selectConn.Local], tmpuser.Ip)
 		global.Logger.Info(tmpuser.Username + "不关联" + selectConn.Svcname + "成功")
+		if len(global.LocalPortAndUserIP[selectConn.Local]) == 0 {
+			delete(global.LocalPortAndUserIP, selectConn.Local)
+		}
+		global.Logger.Info(global.LocalPortAndUserIP)
 		if global.DB.Model(&selectConn).Association("User").Count() == 0 {
 			global.Logger.Info(selectConn.Local + " 端口已无人员使用，开始关闭")
 			// (*(selectConn.St[0])).Close()
@@ -170,6 +174,8 @@ func DelSshtunnel(ctx *gin.Context) {
 		global.Logger.Info(tmpconn.Local + " 端口被admin权限账户请求删除")
 		// (*(selectConn.St[0])).Close()
 		(*(global.GlobalSshtunnelInfo[tmpconn.Local])).Close()
+
+		delete(global.LocalPortAndUserIP, tmpconn.Local)
 		global.Logger.Info(tmpconn.Local + " 端口关闭成功")
 		if err := global.DB.Model(&myorm.Conn{}).Where("id = ?", delInfo.ID).Update("local", "").Error; err != nil {
 			global.Logger.Error("重置local失败: " + err.Error())
