@@ -96,6 +96,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			for _, v := range GlobalSshtunnelInfo {
 				if v == &local_listen {
 					f = true
+					break
 				}
 			}
 			if f {

@@ -125,9 +125,9 @@ func DelSshtunnel(ctx *gin.Context) {
 		f := false
 		for _, k := range tmpuser.Conn {
 			if delInfo.ID == k.ID {
-				fmt.Println(*k)
 				selectConn = *k
 				f = true
+				break
 			}
 		}
 		if !f {
