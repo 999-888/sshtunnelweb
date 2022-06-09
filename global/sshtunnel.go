@@ -171,29 +171,9 @@ func transfer(local *net.Conn, remote *net.Conn) {
 	defer (*local).Close()
 	defer (*remote).Close()
 
-	f := false // 判定是否有权限可以继续访问
-	tmpIP := strings.Split((*local).RemoteAddr().String(), ":")
-	// len(tmpIP)
-	requestIP := tmpIP[0]                                             // 研发请求过来的IP,ipv4 OK, ipv6失败
-	localPort := strings.Split((*local).LocalAddr().String(), ":")[1] // 转发服务监听的本地端口
-	findUser := myorm.User{}
-	if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).First(&findUser).Error; err != nil {
-		Logger.Error(requestIP + "查找关联用户失败: " + err.Error())
-	}
-	if _, ok := LocalPortAndUserIP[localPort]; ok {
-		if _, ok := LocalPortAndUserIP[localPort][requestIP]; ok {
-			f = true
-		}
-	}
-	if findUser.IsAdmin { // admin可以使用所有的转发
-		f = true
-	}
+	go func() {
+		io.Copy((*remote), (*local))
+	}()
 
-	if f {
-		go func() {
-			io.Copy((*remote), (*local))
-		}()
-
-		io.Copy((*local), (*remote))
-	}
+	io.Copy((*local), (*remote))
 }
