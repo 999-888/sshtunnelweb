@@ -92,6 +92,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 
 		if err != nil {
 			Logger.Error("本地accept失败 :" + err.Error())
+			// 判断是否是端口关闭引起的错误，端口关闭，则该线程也关闭借宿循环
 			f := false
 			for _, v := range GlobalSshtunnelInfo {
 				if v == &local_listen {
@@ -169,9 +170,30 @@ func transfer(local *net.Conn, remote *net.Conn) {
 	// 每次交互完信息，把local remote自动close
 	defer (*local).Close()
 	defer (*remote).Close()
-	go func() {
-		io.Copy((*remote), (*local))
-	}()
 
-	io.Copy((*local), (*remote))
+	f := false // 判定是否有权限可以继续访问
+	tmpIP := strings.Split((*local).RemoteAddr().String(), ":")
+	// len(tmpIP)
+	requestIP := tmpIP[0]                                             // 研发请求过来的IP,ipv4 OK, ipv6失败
+	localPort := strings.Split((*local).LocalAddr().String(), ":")[1] // 转发服务监听的本地端口
+	findUser := myorm.User{}
+	if err := DB.Model(&myorm.User{}).Where(myorm.User{Ip: requestIP}).First(&findUser).Error; err != nil {
+		Logger.Error(requestIP + "查找关联用户失败: " + err.Error())
+	}
+	if _, ok := LocalPortAndUserIP[localPort]; ok {
+		if _, ok := LocalPortAndUserIP[localPort][requestIP]; ok {
+			f = true
+		}
+	}
+	if findUser.IsAdmin { // admin可以使用所有的转发
+		f = true
+	}
+
+	if f {
+		go func() {
+			io.Copy((*remote), (*local))
+		}()
+
+		io.Copy((*local), (*remote))
+	}
 }
