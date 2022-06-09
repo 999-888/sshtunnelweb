@@ -134,6 +134,7 @@ func DelOneUserLocalPort(c *gin.Context) {
 		resp.Error(500, "取消关联失败")
 		return
 	}
+	delete(global.LocalPortAndUserIP[tmpConn.Local], tmpUser.Ip)
 	resp.Success(nil)
 	return
 }

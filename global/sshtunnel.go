@@ -142,7 +142,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 		// 	}
 		// }
 		if f {
-
+			Logger.Info(LocalPortAndUserIP)
 			// 没法复用dail返回的net.conn
 			remote, err := st.Dial("tcp", Remote)
 			// fmt.Println("remote addr ", &remote)
