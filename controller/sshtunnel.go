@@ -156,9 +156,9 @@ func DelSshtunnel(ctx *gin.Context) {
 				return
 			}
 			global.Logger.Info("重置db中的local为空成功")
-			resp.Success(nil)
-			return
 		}
+		resp.Success(nil)
+		return
 	} else {
 		tmpconn := myorm.Conn{}
 		if err := global.DB.First(&tmpconn, delInfo.ID).Error; err != nil {

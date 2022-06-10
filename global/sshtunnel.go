@@ -82,7 +82,6 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			err := recover()
 			if err != nil {
 				Logger.Error(fmt.Printf("recover receive a err: %+v \n", err))
-
 			}
 		}()
 		//等待交互信息传输，才会进行下一步，不然就一直等待，for循环就卡在这里
@@ -103,7 +102,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			if f {
 				continue
 			} else {
-				local.Close()
+				Logger.Info(local.LocalAddr().String() + "已经关闭了")
 				break
 			}
 		}
