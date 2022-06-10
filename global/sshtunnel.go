@@ -103,6 +103,7 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 			if f {
 				continue
 			} else {
+				local.Close()
 				break
 			}
 		}
