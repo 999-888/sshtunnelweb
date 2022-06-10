@@ -19,7 +19,6 @@ var (
 func InitSqlite() {
 	// fmt.Println(CF.Sqlite.Path)
 	if _, err := os.Stat(CF.Sqlite.Path); err != nil {
-		fmt.Println(err.Error())
 		if os.IsNotExist(err) {
 			if err := os.MkdirAll(CF.Sqlite.Path, os.ModePerm); err != nil {
 				Logger.Error("创建db日志目录失败")
@@ -90,6 +89,5 @@ func InitSqlite() {
 				}
 			}
 		}
-		Logger.Info(LocalPortAndUserIP)
 	}
 }

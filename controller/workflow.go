@@ -91,7 +91,6 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			} else {
 				global.LocalPortAndUserIP[local] = map[string]string{tmpuser.Ip: "1"}
 			}
-			global.Logger.Info(global.LocalPortAndUserIP)
 			global.Logger.Info(tmpuser.Username + " 关联 " + local + " 成功")
 		}
 		go global.StartTunnel(local_listen, tmpconn.Remote, global.ST)
@@ -113,7 +112,6 @@ func starttunnel(workflowID uint, isadmin bool, tmpres myorm.Conn) error {
 			} else {
 				global.LocalPortAndUserIP[tmpconn.Local] = map[string]string{tmpuser.Ip: "1"}
 			}
-			global.Logger.Info(global.LocalPortAndUserIP)
 			global.Logger.Info(tmpuser.Username + " 关联 " + tmpconn.Local + " 成功")
 		}
 	}

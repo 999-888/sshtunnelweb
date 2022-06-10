@@ -167,18 +167,13 @@ func StartTunnel(local_listen net.Listener, Remote string, st *ssh.Client) {
 }
 
 func transfer(local *net.Conn, remote *net.Conn) {
-	// 每次交互完信息，把local remote自动close
 	defer (*local).Close()
 	defer (*remote).Close()
 
+	// remote 的writer 复制给 local的read
 	go func() {
-		w, err := io.Copy((*remote), (*local))
-		if err != nil {
-			Logger.Error(err.Error())
-		} else {
-			Logger.Infof("%s写了%d字节", (*local).RemoteAddr(), w)
-		}
+		io.Copy((*remote), (*local))
 	}()
-
+	// local 的writer 复制给 remote的read
 	io.Copy((*local), (*remote))
 }

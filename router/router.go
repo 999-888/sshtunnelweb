@@ -27,8 +27,7 @@ func Router() *gin.Engine {
 	r.NoRoute(index.RedirectIndex)
 
 	r.Use(middleware.AccessLog(), Recover)
-	// r.Use(middleware.Tt())
-	r.Use(middleware.Cors())
+	r.Use(middleware.Cors()) // options通过
 	baseGroupRouter := r.Group("/svc")
 	{
 
