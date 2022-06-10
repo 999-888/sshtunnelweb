@@ -1,0 +1,12 @@
+{
+    "sqltools.connections": [
+        {
+            "previewLimit": 50,
+            "driver": "SQLite",
+            "database": "${workspaceFolder:sshtunnelwithweb}/dbfile/app.db",
+            "name": "db",
+            "group": "db"
+        }
+    ],
+    "sqltools.useNodeRuntime": true
+}

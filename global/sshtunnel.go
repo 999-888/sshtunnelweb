@@ -172,7 +172,12 @@ func transfer(local *net.Conn, remote *net.Conn) {
 	defer (*remote).Close()
 
 	go func() {
-		io.Copy((*remote), (*local))
+		w, err := io.Copy((*remote), (*local))
+		if err != nil {
+			Logger.Error(err.Error())
+		} else {
+			Logger.Infof("%s写了%d字节", (*local).RemoteAddr(), w)
+		}
 	}()
 
 	io.Copy((*local), (*remote))
