@@ -25,7 +25,6 @@ gin + zaplog + jwt + viper + sqlite实现的基于IP的控制内部访问生产�
 ![](./docs/images/6.png)
 ![](./docs/images/7.png)
 ![](./docs/images/8.png)
-![](./docs/images/9.png)
 ### 普通账户
 ![](./docs/images/11.png)
 ![](./docs/images/12.png)
