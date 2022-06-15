@@ -9,6 +9,8 @@ KillMode=process
 Restart=on-failure
 RestartPreventExitStatus=255
 Type=simple
+StandardOutput=file:/sshtunnelweb/logs/stdout.log
+StandardError=file:/sshtunnelweb/logs/stderr.log
 
 [Install]
 WantedBy=multi-user.target
