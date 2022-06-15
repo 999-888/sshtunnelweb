@@ -4,7 +4,7 @@
 
 ```
 新手练习项目
-gin + zaplog + jwt + cfg + sqlite实现的基于IP的控制内部访问生产服务的ssh隧道转发系统
+gin + zaplog + jwt + viper + sqlite实现的基于IP的控制内部访问生产服务的ssh隧道转发系统
 ```
 1. 修改配置文件，根据需求设置自定义的参数：比如日志存放目录/内置admin的账户/sqlite文件存放目录/jwt的过期时间
 2. 服务启动后，要先配置中转机：即要借助的ssh隧道转发主机，填写ssh登录的IP,PORT,USERNAME,PASSWD
@@ -16,8 +16,25 @@ gin + zaplog + jwt + cfg + sqlite实现的基于IP的控制内部访问生产服
 8. admin权限账户可以修改一个账户可以访问的内网端口等
 
 ## 概览截图
-![](./docs/images/admin.png)
-![](./docs/images/user.png)
+### admin权限的账户
+![](./docs/images/1.png)
+![](./docs/images/2.png)
+![](./docs/images/3.png)
+![](./docs/images/4.png)
+![](./docs/images/5.png)
+![](./docs/images/6.png)
+![](./docs/images/7.png)
+![](./docs/images/8.png)
+![](./docs/images/9.png)
+### 普通账户
+![](./docs/images/11.png)
+![](./docs/images/12.png)
+![](./docs/images/13.png)
+### 访问展示
+#### 授权的
+![](./docs/images/21.png)
+#### 未授权的
+![](./docs/images/22.png)
 
 ## bug
 1. 所有页面显示的，没有分页功能；有分页的按钮，实际没有做分页
@@ -25,5 +42,5 @@ gin + zaplog + jwt + cfg + sqlite实现的基于IP的控制内部访问生产服
 ![](./doc/images/conn-bug.png)
 
 ## TODO
-1. 普通账户界面显示：已授权的服务，正在审批的授权，已拒绝的审批
-2. admin权限的账户，工作流增加拒绝按钮
+1. 
+2. 
