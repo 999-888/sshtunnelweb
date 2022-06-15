@@ -1,1 +1,0 @@
-import{q as o}from"./index.f1bf0a60.js";function n(){return o({url:"/sshinfo/list",method:"get"})}function e(t){return o({url:"/sshinfo/add",method:"post",data:t})}function r(t){return o({url:"/sshinfo/update",method:"post",data:t})}export{e as a,n as g,r as u};

@@ -1,17 +1,23 @@
 package resps
 
+import "time"
+
 type Conn struct {
 	ID uint
 	// port
 	Local string
 	// ip:port
-	Svcname string
+	Svcname   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Remote struct {
-	ID      uint
-	Remote  string
-	Svcname string
+	ID        uint
+	Remote    string
+	Svcname   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type RemoteSelect struct {
@@ -20,11 +26,13 @@ type RemoteSelect struct {
 }
 
 type User struct {
-	ID       uint
-	Username string
-	Passwd   string
-	Ip       string
-	IsAdmin  bool
+	ID        uint
+	Username  string
+	Passwd    string
+	Ip        string
+	IsAdmin   bool
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type LocalPortUser struct {
@@ -33,11 +41,13 @@ type LocalPortUser struct {
 }
 
 type Sshinfo struct {
-	ID       uint
-	Username string
-	Passwd   string
-	Port     string
-	Host     string
+	ID        uint
+	Username  string
+	Passwd    string
+	Port      string
+	Host      string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }
 
 type Workflow struct {
@@ -45,4 +55,6 @@ type Workflow struct {
 	Username  string
 	Localport string
 	Svcname   string
+	CreatedAt time.Time
+	UpdatedAt time.Time
 }

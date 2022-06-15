@@ -23,7 +23,7 @@ func ListSshtunnelRemote(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(401, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {
@@ -54,7 +54,7 @@ func ListSshtunnelRemoteSelect(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	tmpres := []resps.RemoteSelect{}
@@ -78,6 +78,23 @@ func ListSshtunnelRemoteSelect(c *gin.Context) {
 
 func AddSshtunnelRemote(c *gin.Context) {
 	resp := util.NewResult(c)
+	userID, ok := c.Get("userid")
+	if !ok {
+		global.Logger.Error("没有获取到jwt信息")
+		resp.Error(500, "没有获取到jwt信息")
+		return
+	}
+	userinfo := myorm.User{}
+	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
+		global.Logger.Error("该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
+		return
+	}
+	if !userinfo.IsAdmin {
+		global.Logger.Error("不是admin用户")
+		resp.Error(500, "不是admin用户")
+		return
+	}
 	type addRemote struct {
 		Remote  string `form:"remote" json:"remote" binding:"required"`
 		Svcname string `form:"svcname" json:"svcname" binding:"required"`
@@ -103,6 +120,23 @@ func AddSshtunnelRemote(c *gin.Context) {
 
 func UpdateSshtunnelRemote(c *gin.Context) {
 	resp := util.NewResult(c)
+	userID, ok := c.Get("userid")
+	if !ok {
+		global.Logger.Error("没有获取到jwt信息")
+		resp.Error(500, "没有获取到jwt信息")
+		return
+	}
+	userinfo := myorm.User{}
+	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
+		global.Logger.Error("该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
+		return
+	}
+	if !userinfo.IsAdmin {
+		global.Logger.Error("不是admin用户")
+		resp.Error(500, "不是admin用户")
+		return
+	}
 	type addRemote struct {
 		Remote  string `form:"remote" json:"remote" binding:"required"`
 		Svcname string `form:"svcname" json:"svcname" binding:"required"`
@@ -151,7 +185,7 @@ func DelSshtunnelRemote(c *gin.Context) {
 				return
 			}
 		} else {
-			resp.Error(403, "还有用户在使用")
+			resp.Error(401, "还有用户在使用")
 			return
 		}
 	}

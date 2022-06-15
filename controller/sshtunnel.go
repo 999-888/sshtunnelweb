@@ -26,7 +26,7 @@ func ListSshtunnel(c *gin.Context) {
 	}
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	tmpres := []resps.Conn{}
@@ -37,7 +37,7 @@ func ListSshtunnel(c *gin.Context) {
 		tmp := myorm.User{}
 		err = global.DB.Preload("Conn").First(&tmp, userID).Error
 		for _, k := range tmp.Conn {
-			tmpres = append(tmpres, resps.Conn{ID: k.ID, Local: k.Local, Svcname: k.Svcname})
+			tmpres = append(tmpres, resps.Conn{ID: k.ID, Local: k.Local, Svcname: k.Svcname, CreatedAt: k.CreatedAt, UpdatedAt: k.UpdatedAt})
 		}
 	}
 	if err != nil {
@@ -59,7 +59,7 @@ func AddSshtunnel(ctx *gin.Context) {
 	}
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 
@@ -114,7 +114,7 @@ func DelSshtunnel(ctx *gin.Context) {
 	tmpuser := myorm.User{}
 	if err := global.DB.Model(&myorm.User{}).Where("id = ?", userID).Preload("Conn").First(&tmpuser).Error; err != nil {
 		global.Logger.Error("db查找用户出错" + err.Error())
-		resp.Error(500, "db查找用户出错")
+		resp.Error(403, "db查找用户出错")
 		return
 	}
 

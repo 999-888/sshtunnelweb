@@ -19,7 +19,7 @@ func ListUsers(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {
@@ -27,7 +27,12 @@ func ListUsers(c *gin.Context) {
 		resp.Error(500, "不是admin用户")
 		return
 	}
-
+	// tmpdata2 := []myorm.User{}
+	// if err := global.DB.Select("ID", "Svcname").Preload("Conn").Find(&tmpdata2).Error; err == nil {
+	// 	global.Logger.Info(tmpdata2)
+	// } else {
+	// 	global.Logger.Info(err.Error())
+	// }
 	tmpdata := []myorm.User{}
 	if global.DB.Preload("Conn").Find(&tmpdata).Error != nil {
 		resp.Success(nil)
@@ -45,11 +50,13 @@ func ListUsers(c *gin.Context) {
 				}
 			}
 			data = append(data, gin.H{
-				"id":       k.ID,
-				"username": k.Username,
-				"ip":       k.Ip,
-				"isadmin":  k.IsAdmin,
-				"conn":     tmpconn,
+				"id":        k.ID,
+				"username":  k.Username,
+				"ip":        k.Ip,
+				"isadmin":   k.IsAdmin,
+				"CreatedAt": k.CreatedAt,
+				"UpdatedAt": k.UpdatedAt,
+				"conn":      tmpconn,
 			})
 		}
 		resp.Success(data)
@@ -68,7 +75,7 @@ func DelUser(ctx *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {
@@ -120,7 +127,7 @@ func UpdateUser(ctx *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {

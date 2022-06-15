@@ -13,9 +13,12 @@ import (
 )
 
 func Router() *gin.Engine {
-	// gin.SetMode(gin.ReleaseMode)
+	gin.SetMode(gin.ReleaseMode)
 	// r := gin.Default()
 	r := gin.New()
+
+	r.Use(middleware.AccessLog(), Recover)
+	r.Use(middleware.Cors()) // options通过
 	//处理异常
 	// r.NoRoute(HandleNotFound)
 	r.NoMethod(HandleNotFound)
@@ -26,8 +29,6 @@ func Router() *gin.Engine {
 	r.GET("/", index.Index)
 	r.NoRoute(index.RedirectIndex)
 
-	r.Use(middleware.AccessLog(), Recover)
-	r.Use(middleware.Cors()) // options通过
 	baseGroupRouter := r.Group("/svc")
 	{
 
@@ -56,8 +57,9 @@ func Router() *gin.Engine {
 			}
 			workflow := sshtunnel.Group("/workflow")
 			{
-				workflow.GET("/list", ctl.ListWorkflow)
-				workflow.POST("/update", ctl.ChangeOnWorkflow)
+				workflow.POST("/list", ctl.ListWorkflow)
+				workflow.POST("/update", ctl.PassOnWorkflow)
+				workflow.POST("/reject", ctl.RejectOnWorkflow)
 			}
 		}
 

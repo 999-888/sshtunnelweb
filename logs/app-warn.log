@@ -94,3 +94,18 @@ created by net/http.(*Server).Serve
 2022-06-08T21:41:42.592+0800	ERROR	global/sshtunnel.go:94	本地accept失败 :accept tcp [::]:55077: use of closed network connection
 2022-06-08T21:47:38.596+0800	ERROR	global/sshtunnel.go:94	本地accept失败 :accept tcp [::]:39650: use of closed network connection
 2022-06-08T21:51:53.654+0800	ERROR	global/sshtunnel.go:94	本地accept失败 :accept tcp [::]:32883: use of closed network connection
+2022-06-14T14:53:33.900+0800	ERROR	global/sshtunnel.go:45	ssh 第1次拨号 中转机失败
+ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+2022-06-14T14:53:36.382+0800	ERROR	global/sshtunnel.go:45	ssh 第2次拨号 中转机失败
+ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+2022-06-14T14:53:38.591+0800	ERROR	global/sshtunnel.go:45	ssh 第3次拨号 中转机失败
+ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+2022-06-14T14:53:41.406+0800	ERROR	global/sshtunnel.go:45	ssh 第4次拨号 中转机失败
+ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+2022-06-14T14:53:43.319+0800	ERROR	global/sshtunnel.go:45	ssh 第5次拨号 中转机失败
+ssh: handshake failed: ssh: unable to authenticate, attempted methods [none password], no supported methods remain
+2022-06-14T14:53:43.319+0800	ERROR	global/sqlite.go:69	启动ing：连接远程机出错
+2022-06-15T15:47:55.468+0800	ERROR	controller/workflow.go:142	addsshtunnel: 获取参数失败
+2022-06-15T15:48:49.338+0800	ERROR	controller/workflow.go:142	addsshtunnel: 获取参数失败
+2022-06-15T17:11:43.256+0800	ERROR	controller/user-login-register.go:74	record not found
+2022-06-15T17:12:19.742+0800	ERROR	controller/sshtunnel-remote.go:61	不是admin用户

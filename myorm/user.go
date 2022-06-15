@@ -35,5 +35,5 @@ type Workflow struct {
 	Username  string
 	Localport string
 	Svcname   string
-	Pass      bool `gorm:"default:false"`
+	Pass      uint8 `gorm:"default:1"` // 1 审核中  2 通过  3  拒绝
 }

@@ -1,0 +1,1 @@
+import{q as t}from"./index.79adc836.js";function e(o){return t({url:"/sshtunnel/workflow/list",method:"post",data:o})}function n(o){return t({url:"/sshtunnel/workflow/update",method:"post",data:o})}function s(o){return t({url:"/sshtunnel/workflow/reject",method:"post",data:o})}export{e as g,s as r,n as u};

@@ -20,8 +20,8 @@ func addWorkflow(username, localport, svcname string) error {
 	return err
 }
 
-func changeWorkflow(ID uint) error {
-	err := global.DB.Model(&myorm.Workflow{}).Where("id = ?", ID).Updates(&myorm.Workflow{Pass: true}).Error
+func changeWorkflow(ID uint, Stats uint8) error {
+	err := global.DB.Model(&myorm.Workflow{}).Where("id = ?", ID).Updates(&myorm.Workflow{Pass: Stats}).Error
 	return err
 }
 
@@ -129,25 +129,38 @@ func ListWorkflow(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
-	if !userinfo.IsAdmin {
-		global.Logger.Error("不是admin用户")
-		resp.Error(500, "不是admin用户")
-		return
+	type statsGet struct {
+		Stats uint8 `form:"stats" form:"stats" binding:"required"`
 	}
+	var postInfo statsGet
 
-	tmpFind := []resps.Workflow{}
-	if err := global.DB.Model(&myorm.Workflow{}).Where("pass = ?", false).Find(&tmpFind).Error; err != nil {
-		resp.Success(nil)
+	if err := c.ShouldBind(&postInfo); err != nil {
+		// fmt.Println(postInfo)
+		global.Logger.Error("addsshtunnel: 获取参数失败")
+		resp.Error(500, "获取参数失败")
 		return
+	}
+	tmpFind := []resps.Workflow{}
+	var err error
+	if userinfo.IsAdmin {
+		if err = global.DB.Model(&myorm.Workflow{}).Where("pass = ?", postInfo.Stats).Find(&tmpFind).Error; err != nil {
+			resp.Success(nil)
+			return
+		}
+	} else {
+		if err = global.DB.Model(&myorm.Workflow{}).Where(myorm.Workflow{Pass: postInfo.Stats, Username: userinfo.Username}).Find(&tmpFind).Error; err != nil {
+			resp.Success(nil)
+			return
+		}
 	}
 	resp.Success(&tmpFind)
 	return
 }
 
-func ChangeOnWorkflow(c *gin.Context) {
+func PassOnWorkflow(c *gin.Context) {
 	resp := util.NewResult(c)
 	userID, ok := c.Get("userid")
 	if !ok {
@@ -158,7 +171,7 @@ func ChangeOnWorkflow(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {
@@ -167,7 +180,9 @@ func ChangeOnWorkflow(c *gin.Context) {
 		return
 	}
 	type addInfo struct {
-		ID uint `form:"id" json:"id" binding:"required"`
+		Username string `form:"username" json:"username" binding:"required"`
+		Svcname  string `form:"svcname" json:"svcname" binding:"required"`
+		ID       uint   `form:"id" json:"id" binding:"required"`
 	}
 	var postInfo addInfo
 	if err := c.ShouldBind(&postInfo); err != nil {
@@ -179,10 +194,51 @@ func ChangeOnWorkflow(c *gin.Context) {
 		resp.Error(500, err.Error())
 		return
 	}
-	if err := changeWorkflow(postInfo.ID); err != nil {
+	if err := changeWorkflow(postInfo.ID, 2); err != nil {
 		resp.Error(500, err.Error())
 		return
 	}
+	global.Logger.Info(userinfo.Username + "通过了" + postInfo.Svcname + "的申请")
+	resp.Success(nil)
+	return
+}
+
+func RejectOnWorkflow(c *gin.Context) {
+	resp := util.NewResult(c)
+	userID, ok := c.Get("userid")
+	if !ok {
+		global.Logger.Error("没有获取到jwt信息")
+		resp.Error(500, "没有获取到jwt信息")
+		return
+	}
+	userinfo := myorm.User{}
+	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
+		global.Logger.Error("该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
+		return
+	}
+	if !userinfo.IsAdmin {
+		global.Logger.Error("不是admin用户")
+		resp.Error(500, "不是admin用户")
+		return
+	}
+	type addInfo struct {
+		Username string `form:"username" json:"username" binding:"required"`
+		Svcname  string `form:"svcname" json:"svcname" binding:"required"`
+		ID       uint   `form:"id" json:"id" binding:"required"`
+	}
+	var postInfo addInfo
+	if err := c.ShouldBind(&postInfo); err != nil {
+		global.Logger.Error(err.Error())
+		resp.Error(500, "获取参数失败")
+		return
+	}
+	if err := changeWorkflow(postInfo.ID, 3); err != nil {
+		global.Logger.Error(err.Error())
+		resp.Error(500, err.Error())
+		return
+	}
+	global.Logger.Info(userinfo.Username + "拒绝了" + postInfo.Svcname + "的申请")
 	resp.Success(nil)
 	return
 }

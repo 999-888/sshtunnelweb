@@ -51,7 +51,7 @@ func ListOneUserLocalPort(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {
@@ -98,7 +98,7 @@ func DelOneUserLocalPort(c *gin.Context) {
 	userinfo := myorm.User{}
 	if global.DB.Model(&myorm.User{}).First(&userinfo, userID).Error != nil {
 		global.Logger.Error("该用户未在db中查到")
-		resp.Error(500, "该用户未在db中查到")
+		resp.Error(403, "该用户未在db中查到")
 		return
 	}
 	if !userinfo.IsAdmin {

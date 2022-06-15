@@ -88,3 +88,16 @@
 2022-06-09T15:50:02.405+0800	INFO	global/sshtunnel1.go:53	启动连接中转机成功
 2022-06-09T15:53:40.530+0800	INFO	global/sshtunnel1.go:53	启动连接中转机成功
 2022-06-09T15:53:40.533+0800	INFO	global/sqlite.go:93	map[58478:map[192.168.1.5:1]]
+2022-06-15T14:48:29.071+0800	INFO	controller/sshtunnel.go:81	zhuce1申请关联node1-grafana
+2022-06-15T17:14:06.349+0800	INFO	controller/sshtunnel.go:81	zhuce1申请关联node1-grafana
+2022-06-15T18:15:40.967+0800	INFO	controller/users.go:34	no such column: Svcname
+2022-06-15T18:24:49.641+0800	INFO	controller/users.go:34	no such column: Svcname
+2022-06-15T18:25:23.660+0800	INFO	controller/sshtunnel.go:81	zhuce1申请关联node3-nginx
+2022-06-15T18:25:36.418+0800	INFO	global/sshtunnel1.go:53	启动连接中转机成功
+2022-06-15T18:25:36.994+0800	INFO	controller/workflow.go:58	node3:80 可用
+2022-06-15T18:25:36.995+0800	INFO	controller/workflow.go:61	node3-nginx: 第一次开启端口
+2022-06-15T18:25:38.334+0800	INFO	controller/workflow.go:68	本地监听 42196 成功
+2022-06-15T18:25:38.334+0800	INFO	controller/workflow.go:70	map[42196:0xc00008eee0]
+2022-06-15T18:25:38.520+0800	INFO	controller/workflow.go:94	zhuce1 关联 42196 成功
+2022-06-15T18:25:38.609+0800	INFO	controller/workflow.go:201	root通过了node3-nginx的申请
+2022-06-15T18:26:39.942+0800	INFO	controller/users.go:34	no such column: Svcname
