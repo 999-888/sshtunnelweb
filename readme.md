@@ -6,6 +6,17 @@
 新手练习项目
 gin + zaplog + jwt + viper + sqlite实现的基于IP的控制内部访问生产服务的ssh隧道转发系统
 ```
+
+## 运行
+```
+# linux
+./sshtunnelweb -c /CONFIG_FILE_DIR/config.yaml 
+
+# window
+./sshtunnelweb.exe -c /CONFIG_FILE_DIR/config.yaml 
+```
+
+
 1. 修改配置文件，根据需求设置自定义的参数：比如日志存放目录/内置admin的账户/sqlite文件存放目录/jwt的过期时间
 2. 服务启动后，要先配置中转机：即要借助的ssh隧道转发主机，填写ssh登录的IP,PORT,USERNAME,PASSWD
 3. 在远程服务中，添加可以让申请访问的目标服务；比如生产中的grafana，prometheus等服务
